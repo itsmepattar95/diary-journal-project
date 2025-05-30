@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { connectDB } from '@/lib/mongodb';
-import { Note } from '@/models/note';
+import { connectMongoDB } from '../../../../lib/mongodb';
+import { Note } from '../../../../models/note';
 
 // ✅ POST - สร้างบันทึกใหม่
 export async function POST(req) {
   try {
-    await connectDB();
+    await connectMongoDB();
     const body = await req.json();
 
     const newNote = new Note({
