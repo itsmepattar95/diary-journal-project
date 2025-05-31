@@ -14,10 +14,11 @@ import Color from '@tiptap/extension-color';
 import TextAlign from '@tiptap/extension-text-align';
 import 'react-toastify/dist/ReactToastify.css';
 import { notesService } from '@/app/core/services/notes.service';
-
+import { useSession } from 'next-auth/react'; // ✅ เพิ่ม
 
 export default function NewNote() {
   const router = useRouter();
+  const { data: session, status } = useSession(); // ✅ เพิ่ม
   const [emoji, setEmoji] = useState(null);
   const [files, setFiles] = useState([]);
   const [base64Images, setBase64Images] = useState([]);
@@ -38,6 +39,12 @@ export default function NewNote() {
 
   const onSubmit = async () => {
     const content = getText();
+
+    if (!session?.user?.id) {
+      toast.error("ไม่พบ session ผู้ใช้");
+      return;
+    }
+
     if (!content || content === '<p></p>') {
       toast.error("กรุณากรอกข้อความ");
       return;
@@ -47,14 +54,16 @@ export default function NewNote() {
       text: content,
       emoji: emoji || '',
       images: base64Images,
+      userId: session.user.id, // ✅ ใส่ userId ส่งไปด้วย
     };
 
     const [res, isError] = await notesService.createNote(param);
+
     if (isError) {
       toast.error("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
     } else {
       toast.success("บันทึกสำเร็จ");
-      // router.push('/diary/list');
+      router.push('/diary/list'); // ✅ กลับไปหน้ารายการ
     }
   };
 
@@ -87,12 +96,15 @@ export default function NewNote() {
     }
   };
 
+  if (status === 'loading') {
+    return <div className="text-center mt-10">กำลังโหลด...</div>;
+  }
+
   return (
     <div className="max-w-3xl mx-auto p-6">
       <ToastContainer />
       <h1 className="text-3xl font-bold text-center mb-4 text-black">เขียนบันทึกใหม่</h1>
 
-      {/* ✅ Toolbar */}
       {editor && (
         <div className="flex flex-wrap gap-2 mb-3 bg-white p-3 rounded-xl shadow border border-gray-300">
           <button onClick={() => editor.chain().focus().toggleBold().run()}
@@ -130,12 +142,10 @@ export default function NewNote() {
         </div>
       )}
 
-      {/* ✅ Editor box */}
       <div className="bg-white min-h-[200px] border border-gray-300 rounded-xl shadow-sm p-4 text-black">
         <EditorContent editor={editor} />
       </div>
 
-      {/* ✅ File upload */}
       <div className="mt-4 bg-gray-200 p-2 rounded-lg text-sm flex items-center gap-2 cursor-pointer">
         <label htmlFor="file-upload" className="cursor-pointer truncate w-full text-black">
           📎 {fileNames}
@@ -150,7 +160,6 @@ export default function NewNote() {
         />
       </div>
 
-      {/* ✅ Emoji selector */}
       <div className="m-4 flex items-center gap-2">
         <span className="text-sm text-black">วันนี้คุณรู้สึกอย่างไร?</span>
         {["😊", "😐", "😢"].map((e, i) => (
@@ -164,7 +173,6 @@ export default function NewNote() {
         ))}
       </div>
 
-      {/* ✅ Submit */}
       <button
         onClick={onSubmit}
         className="mt-6 w-full bg-black text-white p-3 rounded-lg font-bold hover:bg-gray-800"

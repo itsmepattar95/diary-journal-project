@@ -5,47 +5,68 @@ import User from "../../../../../models/user";
 import bcrypt from "bcryptjs";
 
 const authOptions = {
-    providers: [
-        CredentialsProvider({
-            name: 'credentials',
-            credentials: {},
-            async authorize(credentials, req) {
+  providers: [
+    CredentialsProvider({
+      name: 'credentials',
+      credentials: {},
+      async authorize(credentials, req) {
+        const { email, password } = credentials;
 
-                const { email, password} = credentials;
+        try {
+          await connectMongoDB();
+          const user = await User.findOne({ email });
 
-                try {
+          if (!user) {
+            return null;
+          }
 
-                    await connectMongoDB();
-                    const user = await User.findOne({ email });
+          const passwordMatch = await bcrypt.compare(password, user.password);
+          if (!passwordMatch) {
+            return null; // แก้จาก 'nulll'
+          }
 
-                    if (!user) {
-                        return null;
-                    }
+          return {
+            id: user._id.toString(), // ✅ แปลง _id เป็น string
+            name: user.name,
+            email: user.email,
+          };
 
-                    const passwordMatch = await bcrypt.compare(password, user.password);
+        } catch (error) {
+          console.log("Error: ", error);
+          return null;
+        }
+      }
+    })
+  ],
 
-                    if (!passwordMatch) {
-                        return nulll
-                    }
+  // 🔐 กำหนดว่าใช้ JWT สำหรับ session
+  session: {
+    strategy: "jwt",
+  },
 
-                    return user;
+  // 🔑 ใส่ secret สำหรับความปลอดภัย
+  secret: process.env.NEXTAUTH_SECRET,
 
-
-                } catch(error) {
-                    console.log("Error: ", error);
-                }
-
-            }
-        })
-    ],
-    session: {
-        strategy:"jwt",
+  // 🔄 เพิ่ม callback เพื่อใส่ user.id ใน session
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
     },
-    secret: process.env.NEXTAUTH_SECRET,
-    pages: {
-        signIn: "/login"
+    async session({ session, token }) {
+      if (token && session.user) {
+        session.user.id = token.id; // ✅ เพิ่ม id เข้าไปใน session
+      }
+      return session;
     }
-}
+  },
+
+  pages: {
+    signIn: "/login"
+  }
+};
 
 const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST};
+export { handler as GET, handler as POST };
