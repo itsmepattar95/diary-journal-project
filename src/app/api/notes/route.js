@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { connectMongoDB } from '../../../../lib/mongodb';
 import { Note } from '../../../../models/note';
-import mongoose from 'mongoose'; // ✅ สำหรับแปลง userId เป็น ObjectId
+import mongoose from 'mongoose'; 
 
 // ✅ POST - สร้างบันทึกใหม่ พร้อม userId
 export async function POST(req) {

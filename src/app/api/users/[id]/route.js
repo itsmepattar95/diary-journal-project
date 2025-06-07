@@ -5,7 +5,7 @@ import User from "../../../../../models/user";
 // ✅ GET - ดูข้อมูลผู้ใช้พร้อมแก้ error
 export async function GET(_, context) {
   try {
-    const { id } = await context.params; // ✅ await ให้แน่ใจว่า params มาถูกต้อง
+    const { id } = await context.params;
     await connectMongoDB();
 
     const user = await User.findById(id).select(

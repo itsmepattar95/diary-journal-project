@@ -24,7 +24,7 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [notes, setNotes] = useState([]);
-  const [allNotesCount, setAllNotesCount] = useState(0); // ✅ NEW
+  const [allNotesCount, setAllNotesCount] = useState(0);
   const [counts, setCounts] = useState({ happy: 0, neutral: 0, sad: 0 });
   const [dailyData, setDailyData] = useState([]);
   const [filterDate, setFilterDate] = useState(dayjs().format("YYYY-MM-DD"));
@@ -52,7 +52,7 @@ export default function AdminDashboard() {
   const fetchNotes = async () => {
     const [data, isError] = await notesService.getNotes();
     if (!isError) {
-      setAllNotesCount(data.length); // ✅ NEW
+      setAllNotesCount(data.length);
 
       const recentDays = Array.from({ length: 7 }, (_, i) =>
         dayjs(filterDate).subtract(6 - i, "day").format("YYYY-MM-DD")

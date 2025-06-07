@@ -14,7 +14,6 @@ function LoginPage() {
   const router = useRouter()
   const { data: session } = useSession()
 
-  // ✅ ย้าย router.replace ไปไว้ใน useEffect
   useEffect(() => {
     if (session) {
       router.replace("/welcome")
@@ -36,7 +35,6 @@ function LoginPage() {
         return
       }
 
-      // ✅ ถ้า login สำเร็จ ให้เปลี่ยนหน้า (ซ้ำ useEffect ได้ แต่อยู่ใน safety zone)
       router.replace("/welcome")
     } catch (error) {
       console.log(error)

@@ -14,11 +14,11 @@ import Color from '@tiptap/extension-color';
 import TextAlign from '@tiptap/extension-text-align';
 import 'react-toastify/dist/ReactToastify.css';
 import { notesService } from '@/app/core/services/notes.service';
-import { useSession } from 'next-auth/react'; // ✅ เพิ่ม
+import { useSession } from 'next-auth/react'; 
 
 export default function NewNote() {
   const router = useRouter();
-  const { data: session, status } = useSession(); // ✅ เพิ่ม
+  const { data: session, status } = useSession();
   const [emoji, setEmoji] = useState(null);
   const [files, setFiles] = useState([]);
   const [base64Images, setBase64Images] = useState([]);
@@ -54,7 +54,7 @@ export default function NewNote() {
       text: content,
       emoji: emoji || '',
       images: base64Images,
-      userId: session.user.id, // ✅ ใส่ userId ส่งไปด้วย
+      userId: session.user.id,
     };
 
     const [res, isError] = await notesService.createNote(param);
@@ -63,7 +63,7 @@ export default function NewNote() {
       toast.error("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
     } else {
       toast.success("บันทึกสำเร็จ");
-      router.push('/diary/list'); // ✅ กลับไปหน้ารายการ
+      router.push('/diary/list');
     }
   };
 

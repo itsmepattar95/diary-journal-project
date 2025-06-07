@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react'; // ✅ เพิ่มเพื่อใช้ session
+import { useSession } from 'next-auth/react';
 import { notesService } from '@/app/core/services/notes.service';
 import dayjs from 'dayjs';
 import 'dayjs/locale/th';
@@ -10,7 +10,7 @@ import Link from 'next/link';
 dayjs.locale('th');
 
 export default function NoteListPage() {
-  const { data: session, status } = useSession(); // ✅ ใช้ session
+  const { data: session, status } = useSession();
   const [notes, setNotes] = useState([]);
   const [filterDate, setFilterDate] = useState('');
   const [emojiCounts, setEmojiCounts] = useState({
@@ -23,7 +23,7 @@ export default function NoteListPage() {
     if (status !== 'authenticated') return;
 
     const fetchData = async () => {
-      const [data, isError] = await notesService.getNotes(session.user.id); // ✅ ส่ง userId ไป
+      const [data, isError] = await notesService.getNotes(session.user.id);
       if (!isError) {
         setNotes(data);
 

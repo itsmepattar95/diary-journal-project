@@ -26,7 +26,7 @@ const authOptions = {
           }
 
           return {
-            id: user._id.toString(), // ✅ แปลง _id เป็น string
+            id: user._id.toString(),
             name: user.name,
             email: user.email,
           };
@@ -57,7 +57,7 @@ const authOptions = {
     },
     async session({ session, token }) {
       if (token && session.user) {
-        session.user.id = token.id; // ✅ เพิ่ม id เข้าไปใน session
+        session.user.id = token.id;
       }
       return session;
     }
