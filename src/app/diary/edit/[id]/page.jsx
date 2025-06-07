@@ -38,7 +38,7 @@ export default function EditNotePage() {
         editor?.commands.setContent(note.text);
         setEmoji(note.emoji);
         setBase64Images(note.images || []);
-        setFileNames(note.images?.length ? `อัปโหลดแล้ว ${note.images.length} รูป` : '');
+        setFileNames(note.images?.length ? `อัปโหลดแล้ว ${note.images.length} รูป` : "สามารถเพิ่มไฟล์: jpg, png, jpeg");
       }
     };
     if (editor) fetchData();
@@ -65,12 +65,19 @@ export default function EditNotePage() {
 
     try {
       const base64 = await Promise.all(base64Promises);
-      setFiles(validFiles);
-      setBase64Images([...base64Images, ...base64]);
-      setFileNames(validFiles.map(f => f.name).join(', '));
+      setFiles(prev => [...prev, ...validFiles]);
+      setBase64Images(prev => [...prev, ...base64]);
+      const total = base64Images.length + base64.length;
+      setFileNames(total ? `อัปโหลดแล้ว ${total} รูป` : "สามารถเพิ่มไฟล์: jpg, png, jpeg");
     } catch (error) {
       toast.error("เกิดข้อผิดพลาดในการอ่านไฟล์");
     }
+  };
+
+  const handleRemoveImage = (index) => {
+    const updated = base64Images.filter((_, i) => i !== index);
+    setBase64Images(updated);
+    setFileNames(updated.length ? `อัปโหลดแล้ว ${updated.length} รูป` : "สามารถเพิ่มไฟล์: jpg, png, jpeg");
   };
 
   const onSubmit = async () => {
@@ -80,13 +87,13 @@ export default function EditNotePage() {
       return;
     }
 
-    const updated = {
+    const updatedNote = {
       text: content,
       emoji: emoji || '',
       images: base64Images,
     };
 
-    const [_, isError] = await notesService.updateNote(id, updated);
+    const [_, isError] = await notesService.updateNote(id, updatedNote);
     if (isError) {
       toast.error("แก้ไขไม่สำเร็จ");
     } else {
@@ -125,6 +132,23 @@ export default function EditNotePage() {
         <label htmlFor="file-upload" className="cursor-pointer truncate w-full text-black">📎 {fileNames}</label>
         <input id="file-upload" type="file" multiple accept="image/png, image/jpeg, image/jpg" className="hidden" onChange={handleFileChange} />
       </div>
+
+      {/* แสดงรูปที่อัปโหลด */}
+      {base64Images.length > 0 && (
+        <div className="grid grid-cols-3 gap-4 mt-4">
+          {base64Images.map((img, index) => (
+            <div key={index} className="relative">
+              <img src={img} alt={`uploaded-${index}`} className="w-full h-32 object-cover rounded-lg border" />
+              <button
+                onClick={() => handleRemoveImage(index)}
+                className="absolute top-1 right-1 bg-black bg-opacity-60 text-white rounded-full px-2 py-1 text-xs hover:bg-opacity-80"
+              >
+                ✖
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Emoji */}
       <div className="m-4 flex items-center gap-2">
