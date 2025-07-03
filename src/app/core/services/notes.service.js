@@ -18,17 +18,16 @@ export const notesService = {
     }
   },
 
-  // ✅ ดึงบันทึกทั้งหมดของผู้ใช้ (ส่ง userId เป็น parameter)
+  // ✅ ดึงบันทึกทั้งหมดของผู้ใช้ หรือทั้งหมดถ้าไม่ส่ง userId
   async getNotes(userId) {
     try {
-      const res = await fetch(`/api/notes?userId=${userId}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
+      let url = '/api/notes';
+      if (userId) url += `?userId=${userId}`;
+
+      const res = await fetch(url);
+      const json = await res.json();
 
       if (!res.ok) return [null, true];
-
-      const json = await res.json();
       return [json.notes || [], false];
     } catch (err) {
       console.error('❌ getNotes error:', err);

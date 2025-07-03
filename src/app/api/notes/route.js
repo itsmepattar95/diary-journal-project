@@ -1,20 +1,22 @@
-import { NextResponse, NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { connectMongoDB } from '../../../../lib/mongodb';
 import { Note } from '../../../../models/note';
-import mongoose from 'mongoose'; 
+import mongoose from 'mongoose';
 
-// ✅ POST - สร้างบันทึกใหม่ พร้อม userId
+// ✅ POST - ผู้ใช้ทั่วไปบันทึก Note พร้อม userId
 export async function POST(req) {
   try {
     await connectMongoDB();
     const body = await req.json();
 
-    // ✅ ตรวจสอบ userId
     if (!body.userId) {
       return NextResponse.json({ success: false, error: 'userId หายไป' }, { status: 400 });
     }
 
-    // ✅ แปลง userId เป็น ObjectId (ตาม schema)
+    if (!mongoose.Types.ObjectId.isValid(body.userId)) {
+      return NextResponse.json({ success: false, error: 'userId ไม่ถูกต้อง' }, { status: 400 });
+    }
+
     const userObjectId = new mongoose.Types.ObjectId(body.userId);
 
     const newNote = new Note({
@@ -33,7 +35,7 @@ export async function POST(req) {
   }
 }
 
-// ✅ GET - ดึงบันทึกของผู้ใช้เท่านั้น
+// ✅ GET - ใช้ทั้งกรณีดึง Notes ของ User และของ Admin
 export async function GET(req) {
   try {
     await connectMongoDB();
@@ -41,11 +43,19 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get('userId');
 
-    if (!userId) {
-      return NextResponse.json({ success: false, error: 'ต้องระบุ userId' }, { status: 400 });
-    }
+    let notes;
 
-    const notes = await Note.find({ userId }).sort({ createdAt: -1 });
+    if (userId) {
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return NextResponse.json({ success: false, error: 'userId ไม่ถูกต้อง' }, { status: 400 });
+      }
+
+      const userObjectId = new mongoose.Types.ObjectId(userId);
+      notes = await Note.find({ userId: userObjectId }).sort({ createdAt: -1 });
+    } else {
+      // ✅ ไม่มี userId → หมายถึง Admin ขอข้อมูลทั้งหมด
+      notes = await Note.find().sort({ createdAt: -1 });
+    }
 
     return NextResponse.json({ success: true, notes }, { status: 200 });
   } catch (error) {

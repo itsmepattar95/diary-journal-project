@@ -128,11 +128,11 @@ export default function NewNote() {
             1.
           </button>
           <button onClick={() => editor.chain().focus().setTextAlign('left').run()}
-            className="px-3 py-1 rounded-full text-sm bg-gray-100 hover:bg-gray-200 border">ซ้าย</button>
+            className="px-3 py-1 rounded-full text-sm bg-gray-100 hover:bg-gray-200 border">Left</button>
           <button onClick={() => editor.chain().focus().setTextAlign('center').run()}
-            className="px-3 py-1 rounded-full text-sm bg-gray-100 hover:bg-gray-200 border">กลาง</button>
+            className="px-3 py-1 rounded-full text-sm bg-gray-100 hover:bg-gray-200 border">Center</button>
           <button onClick={() => editor.chain().focus().setTextAlign('right').run()}
-            className="px-3 py-1 rounded-full text-sm bg-gray-100 hover:bg-gray-200 border">ขวา</button>
+            className="px-3 py-1 rounded-full text-sm bg-gray-100 hover:bg-gray-200 border">Right</button>
           <input
             type="color"
             onChange={(e) => editor.chain().focus().setColor(e.target.value).run()}
