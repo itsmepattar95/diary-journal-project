@@ -56,7 +56,7 @@ export default function AdminDashboard() {
       filteredNotes.forEach((note) => {
         if (note.emoji === "😊") happy++;
         else if (note.emoji === "😐") neutral++;
-        else if (note.emoji === "😢" || note.emoji === "😠") sad++;
+        else if (note.emoji === "😠") sad++;
       });
       setCounts({ happy, neutral, sad });
 
@@ -111,7 +111,7 @@ export default function AdminDashboard() {
           <p className="text-2xl font-bold text-green-900">{counts.neutral} รายการ</p>
         </div>
         <div className="bg-blue-100 p-4 rounded-xl shadow">
-          <p className="text-sm font-medium text-blue-800">😢/😠 Bad Day</p>
+          <p className="text-sm font-medium text-blue-800">😢 Bad Day</p>
           <p className="text-2xl font-bold text-blue-900">{counts.sad} รายการ</p>
         </div>
         <div className="bg-purple-100 p-4 rounded-xl shadow">
