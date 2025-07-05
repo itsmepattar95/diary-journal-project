@@ -33,6 +33,7 @@ export default function AdminLogin() {
         localStorage.setItem('role', data.role);
         router.push('/admin/dashboard');
       } else {
+        
         setError(data.message || "Login failed");
       }
 
