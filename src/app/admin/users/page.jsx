@@ -59,7 +59,7 @@ export default function AdminUsers() {
       <input
         type="text"
         placeholder="ค้นหาชื่อผู้ใช้..."
-        className="border p-2 mb-4 w-full max-w-md"
+        className="border p-2 mb-4 w-full max-w-md rounded-xl"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
@@ -109,13 +109,13 @@ export default function AdminUsers() {
                 <td className="border p-2 text-center">
                   <button
                     onClick={() => router.push(`/admin/manage/${user._id}`)}
-                    className="text-blue-600 hover:underline mr-2"
+                    className="text-blue-400 mr-2 border-2 border-blue-300 p-3 rounded-xl font-bold  cursor-pointer hover:bg-blue-300 hover:text-white transition duration-300"
                   >
                     จัดการ
                   </button>
                   <button
                     onClick={() => handleDelete(user._id)}
-                    className="text-red-500 hover:underline"
+                    className="text-red-400 mr-2 border-2 border-red-300 p-3 rounded-xl font-bold  cursor-pointer hover:bg-red-300 hover:text-white transition duration-300"
                   >
                     ลบ
                   </button>

@@ -74,7 +74,6 @@ function RegisterPage() {
 
   return (
     <div>
-      <Navbar />
       <div className='container mx-auto py-5'>
         <h3>Register Page</h3>
         <hr className='my-3' />
