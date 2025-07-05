@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar'
 import Link from 'next/link'
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-
+import { toast } from 'react-toastify';
 function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -16,9 +16,17 @@ function LoginPage() {
 
   useEffect(() => {
     if (session) {
-      router.replace("/welcome")
+      if (session.user.role == 'user') {
+        router.replace("/diary/welcome");
+      } else {
+        router.replace("/admin/dashboard");
+      }
     }
-  }, [session, router])
+  }, [session, router]);
+
+  useEffect(() => {
+    setError(null);
+  }, [email, password])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -31,45 +39,63 @@ function LoginPage() {
       })
 
       if (res.error) {
-        setError("Invalid credentials")
-        return
+        setError("ชื่อผู้ใช้ หรือ รหัสผ่านไม่ถูกต้อง")
+        toast.error("ชื่อผู้ใช้ หรือ รหัสผ่านไม่ถูกต้อง");
+        return;
       }
+      toast.success("เข้าสู่ระบบสำเร็จ");
+      console.log('check res',res);
 
-      router.replace("/welcome")
+      if (session.user.role == 'user') {
+        router.replace("/diary/welcome")
+      } else {
+        router.replace("/admin/dashboard");
+      };
+
     } catch (error) {
       console.log(error)
       setError("Something went wrong.")
+      toast.error("เข้าสู่ระบบไม่สำเร็จ");
     }
   }
 
   return (
     <div>
-      <Navbar />
       <div className='container mx-auto py-5'>
         <h3>Login Page</h3>
         <hr className='my-3' />
 
         <form onSubmit={handleSubmit}>
+          <div className='mt-2'>
+            <label htmlFor="userName" className='text-200'>ชื่อผู้ใช้</label>
+            <input
+              onChange={(e) => setEmail(e.target.value)}
+              id='userName'
+              className={`block bg-gray-300 py-2 my-2 rounded-md w-full max-w-sm px-2  ${error ? 'border-2 border-red-300 bg-red-200 text-red-400' : ''}`}
+              type="email"
+              placeholder='Enter your email'
+              required
+            />
+          </div>
+
+          <div className='mt-2'>
+            <label htmlFor="password" className='text-200'>รหัสผ่าน</label>
+            <input
+              onChange={(e) => setPassword(e.target.value)}
+              id='password'
+              className={`block bg-gray-300 py-2 my-2 rounded-md w-full max-w-sm px-2  ${error ? 'border-2 border-red-300 bg-red-200 text-red-400' : ''}`}
+              type="password"
+              placeholder='Enter your password'
+              required
+            />
+          </div>
+
           {error && (
             <div className="bg-red-500 w-fit text-sm text-white py-1 px-3 rounded-md mt-2">
               {error}
             </div>
           )}
 
-          <input
-            onChange={(e) => setEmail(e.target.value)}
-            className='block bg-gray-300 py-2 my-2 rounded-md w-full max-w-sm px-2'
-            type="email"
-            placeholder='Enter your email'
-            required
-          />
-          <input
-            onChange={(e) => setPassword(e.target.value)}
-            className='block bg-gray-300 py-2 my-2 rounded-md w-full max-w-sm px-2'
-            type="password"
-            placeholder='Enter your password'
-            required
-          />
           <button
             type='submit'
             className='bg-green-500 p-2 rounded-md text-white mt-2'

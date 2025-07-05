@@ -27,7 +27,6 @@ const authOptions = {
           role: user.role,
         };
         const token = jwt.sign(payload, SECRET, { expiresIn: "7d" });
-
         return {
           id: user._id.toString(),
           name: user.name,
@@ -75,4 +74,5 @@ const authOptions = {
 };
 
 const handler = NextAuth(authOptions);
+
 export { handler as GET, handler as POST };

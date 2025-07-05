@@ -3,10 +3,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 function Navbar() {
+  const route = useRouter();
   const { data: session } = useSession();
-
+  const role = localStorage.getItem('role');
   return (
     <nav className="bg-[#333] text-white px-4 py-5 shadow-md">
       <div className="flex justify-between items-center">
@@ -22,7 +24,7 @@ function Navbar() {
 
         {/* เมนูขวาสุด */}
         <ul className="flex items-center">
-          {!session ? (
+          {!session && role != 'admin' ? (
             <>
               <li className="mx-2">
                 <Link
@@ -41,11 +43,30 @@ function Navbar() {
                 </Link>
               </li>
             </>
+          ) : role == 'admin' ? (
+            <>
+              <li className="mx-2">
+                <Link
+                  href="/diary/welcome"
+                  className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-sm md:text-base transition-all"
+                >
+                  Profile
+                </Link>
+              </li>
+              <li className="mx-2">
+                <button
+                  onClick={() => { localStorage.setItem('role', '');   route.replace('/admin/login')}}
+                  className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md text-sm md:text-base transition-all"
+                >
+                  Logout
+                </button>
+              </li>
+            </>
           ) : (
             <>
               <li className="mx-2">
                 <Link
-                  href="/welcome"
+                  href="/diary/welcome"
                   className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-sm md:text-base transition-all"
                 >
                   Profile
