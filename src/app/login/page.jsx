@@ -43,7 +43,7 @@ function LoginPage() {
 
       console.log("Response:", res);
 
-      if (res.error) {
+      if (res.status != 200) {
         setError("ชื่อผู้ใช้ หรือ รหัสผ่านไม่ถูกต้อง");
         toast.error("ชื่อผู้ใช้ หรือ รหัสผ่านไม่ถูกต้อง");
         return;
@@ -52,15 +52,16 @@ function LoginPage() {
       toast.success("เข้าสู่ระบบสำเร็จ");
 
       const session = await getSession();
-      console.log("Session after login:", session);
 
-      if (session?.user?.role === "admin") {
-        router.replace("/admin/dashboard");
-      } else if (session?.user?.role === "user") {
-        router.replace("/diary/welcome");
-      } else {
-        router.replace("/");
+      if (session.user) {
+        localStorage.setItem('role', session.user.role);
+        if (session?.user?.role === "admin") {
+          router.replace("/admin/dashboard");
+        } else {
+          router.replace("/diary/welcome");
+        }
       }
+
     } catch (error) {
       console.error("Login error:", error);
       setError("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
@@ -90,9 +91,8 @@ function LoginPage() {
             <input
               onChange={(e) => setEmail(e.target.value)}
               id="userName"
-              className={`block bg-gray-300 py-2 my-2 rounded-md w-full max-w-sm px-2 ${
-                error ? "border-2 border-red-300 bg-red-200 text-red-400" : ""
-              }`}
+              className={`block bg-gray-300 py-2 my-2 rounded-md w-full max-w-sm px-2 ${error ? "border-2 border-red-300 bg-red-200 text-red-400" : ""
+                }`}
               type="email"
               placeholder="Enter your email"
               required
@@ -106,9 +106,8 @@ function LoginPage() {
             <input
               onChange={(e) => setPassword(e.target.value)}
               id="password"
-              className={`block bg-gray-300 py-2 my-2 rounded-md w-full max-w-sm px-2 ${
-                error ? "border-2 border-red-300 bg-red-200 text-red-400" : ""
-              }`}
+              className={`block bg-gray-300 py-2 my-2 rounded-md w-full max-w-sm px-2 ${error ? "border-2 border-red-300 bg-red-200 text-red-400" : ""
+                }`}
               type="password"
               placeholder="Enter your password"
               required

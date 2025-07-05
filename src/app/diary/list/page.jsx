@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { notesService } from '@/app/core/services/notes.service';
+import { notesService } from "../../core/services/notes.service";
 import dayjs from 'dayjs';
 import 'dayjs/locale/th';
 import Link from 'next/link';

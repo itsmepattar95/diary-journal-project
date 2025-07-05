@@ -13,7 +13,7 @@ import TextStyle from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import TextAlign from '@tiptap/extension-text-align';
 import 'react-toastify/dist/ReactToastify.css';
-import { notesService } from '@/app/core/services/notes.service';
+import { notesService } from "../../core/services/notes.service";
 import { useSession } from 'next-auth/react'; 
 
 export default function NewNote() {

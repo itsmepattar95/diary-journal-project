@@ -41,7 +41,7 @@ function Navbar() {
 
         {/* เมนูขวาสุด */}
         <ul className="flex items-center">
-          {status === "unauthenticated" && role !== 'admin' ? (
+          {!session ? (
             <>
               <li className="mx-2">
                 <Link

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useParams } from 'next/navigation';
-import { notesService } from '@/app/core/services/notes.service';
+import { notesService } from "../../../core/services/notes.service";
 import Link from 'next/link';
 import dayjs from 'dayjs';
 import 'dayjs/locale/th';
@@ -66,6 +66,18 @@ export default function MoodCategoryPage() {
                   className="prose prose-sm text-gray-800 line-clamp-4"
                   dangerouslySetInnerHTML={{ __html: note.text }}
                 />
+                {note.images?.length > 0 && (
+                  <div className="mt-3 flex gap-2 flex-wrap">
+                    {note.images.map((img, i) => (
+                      <img
+                        key={i}
+                        src={img}
+                        alt="uploaded"
+                        className="w-24 h-24 object-cover rounded-lg border"
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </Link>
           ))}

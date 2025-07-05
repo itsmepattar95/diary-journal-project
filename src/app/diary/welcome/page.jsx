@@ -22,7 +22,7 @@ export default function WelcomePage() {
     <div className="flex flex-col min-h-screen">
       <main className="flex-1 p-6 md:ml-64 max-w-3xl mx-auto">
         <h3 className="text-3xl font-bold mb-3">
-          Welcome: {session.user?.name}
+          Welcome: {session.user?.name} 
         </h3>
         <p className="text-gray-700 mb-2">Username: {session.user?.name}</p>
         <p className="text-gray-700 mb-2">Email: {session.user?.email}</p>

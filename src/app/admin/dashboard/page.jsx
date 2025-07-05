@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { notesService } from "@/app/core/services/notes.service";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
 import { Bar } from "react-chartjs-2";
@@ -14,6 +13,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { notesService } from "../../core/services/notes.service";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 dayjs.locale("th");

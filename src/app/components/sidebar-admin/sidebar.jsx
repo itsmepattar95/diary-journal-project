@@ -21,6 +21,7 @@ export default function Sidebar() {
   const links = [
     { href: "/admin/dashboard", label: "🏠 หน้าหลัก" },
     { href: "/admin/users", label: "📄 จัดการผู้ใช้งาน" },
+    { href: "/diary/welcome", label: "🏠 หน้าหลักผู้ใช้งาน" },
   ];
 
   if (!role) return null; // ถ้าไม่มี role ไม่แสดง Sidebar เลย

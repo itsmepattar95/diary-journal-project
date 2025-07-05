@@ -17,6 +17,7 @@ export default function Sidebar() {
     { href: "/diary/list", label: "📄 รายการทั้งหมด" },
     { href: "/diary/create", label: "✏️ สร้างบันทึก" },
     { href: "/diary/stats", label: "📊 สถิติอารมณ์" },
+    { href: "/admin/dashboard", label: "🏠 หน้าหลักแอดมิน", adminOnly: true },
   ]
 
   return (
@@ -37,17 +38,23 @@ export default function Sidebar() {
 
         {/* Menu List */}
         <ul className={`space-y-2 px-3 ${isOpen ? 'block' : 'hidden'}`}>
-          {links.map(link => (
-            <li key={link.href}>
-              <Link
-                href={link.href}
-                className={`block px-3 py-2 rounded-md hover:bg-gray-700 transition-all ${pathname === link.href ? 'bg-gray-800 font-bold' : ''
-                  }`}
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
+          {links
+            .filter(link => {
+              // ซ่อนลิงก์ admin ถ้า user ไม่ใช่ admin
+              if (link.adminOnly && session?.user?.role !== 'admin') return false;
+              return true;
+            })
+            .map(link => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className={`block px-3 py-2 rounded-md hover:bg-gray-700 transition-all ${pathname === link.href ? 'bg-gray-800 font-bold' : ''
+                    }`}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
         </ul>
 
         {/* Mini icon menu */}

@@ -8,7 +8,7 @@ dayjs.locale('th');
 
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { notesService } from '@/app/core/services/notes.service';
+import { notesService } from "../../../core/services/notes.service";
 import Link from 'next/link';
 
 export default function ViewNotePage() {

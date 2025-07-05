@@ -10,7 +10,7 @@ import Color from '@tiptap/extension-color';
 import TextAlign from '@tiptap/extension-text-align';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { notesService } from '@/app/core/services/notes.service';
+import { notesService } from "../../core/services/notes.service";
 
 export default function EditNotePage() {
   const { id } = useParams();
