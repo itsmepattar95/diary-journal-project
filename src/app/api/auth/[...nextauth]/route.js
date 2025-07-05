@@ -7,32 +7,42 @@ import jwt from "jsonwebtoken";
 
 const SECRET = process.env.NEXTAUTH_SECRET;
 
-const authOptions = {
+const handler = NextAuth({
   providers: [
     CredentialsProvider({
       name: "credentials",
-      credentials: {},
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
       async authorize(credentials) {
         await connectMongoDB();
 
         const user = await User.findOne({ email: credentials.email });
-        if (!user) return null;
+        if (!user) {
+          throw new Error("ไม่พบผู้ใช้ในระบบ");
+        }
 
         const isValid = await bcrypt.compare(credentials.password, user.password);
-        if (!isValid) return null;
+        if (!isValid) {
+          throw new Error("รหัสผ่านไม่ถูกต้อง");
+        }
 
-        // สร้าง JWT token เอง
+        // สร้าง token ฝั่ง client
         const payload = {
           userId: user._id.toString(),
           role: user.role,
         };
-        const token = jwt.sign(payload, SECRET, { expiresIn: "7d" });
+        const accessToken = jwt.sign(payload, SECRET, { expiresIn: "7d" });
+
+        console.log("Res", user.role);
+
         return {
           id: user._id.toString(),
           name: user.name,
           email: user.email,
           role: user.role,
-          accessToken: token,
+          accessToken,
         };
       },
     }),
@@ -53,6 +63,7 @@ const authOptions = {
         token.email = user.email;
         token.id = user.id;
       }
+
       return token;
     },
 
@@ -64,6 +75,7 @@ const authOptions = {
         role: token.role,
       };
       session.accessToken = token.accessToken;
+
       return session;
     },
   },
@@ -71,8 +83,6 @@ const authOptions = {
   pages: {
     signIn: "/login",
   },
-};
-
-const handler = NextAuth(authOptions);
+});
 
 export { handler as GET, handler as POST };

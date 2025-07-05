@@ -2,11 +2,19 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function HomePage() {
   const { data: session } = useSession();
   const route = useRouter();
-  const role = localStorage.getItem('role');
+  const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    // อ่าน role จาก localStorage เฉพาะฝั่ง client
+    const storedRole = localStorage.getItem("role");
+    setRole(storedRole);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-blue-100 text-gray-800 w-full">
       <main className="flex flex-col items-center justify-center text-center px-6 py-20">
@@ -18,11 +26,18 @@ export default function HomePage() {
         </p>
       </main>
 
-      {session || role ? <div className="flex items-center justify-center">
-        <button
-          className="border-2 border-pink-300 p-4 rounded-full bg-gradient-to-r from-pink-600 to-purple-500 text-pink-100 font-bold cursor-pointer" onClick={() => { route.replace('/diary/welcome') }}>เข้าสู๋หน้าหลัก</button>
-      </div> : ''
-      }
+      {(session || role) && (
+        <div className="flex items-center justify-center">
+          <button
+            className="border-2 border-pink-300 p-4 rounded-full bg-gradient-to-r from-pink-600 to-purple-500 text-pink-100 font-bold cursor-pointer"
+            onClick={() => {
+              route.replace("/diary/welcome");
+            }}
+          >
+            เข้าสู่หน้าหลัก
+          </button>
+        </div>
+      )}
     </div>
   );
 }
